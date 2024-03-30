@@ -1,4 +1,3 @@
-// const { User } = require('../models');
 const {
   createUser,
   getSingleUser,
@@ -6,15 +5,16 @@ const {
   deleteBook,
   login,
 } = require('../controllers/user-controller');
+const { User } = require('../models');
+
+const { AuthenticationError } = require('../utils/auth');
 
 const resolvers = {
   Query: {
     me: async (_, __, context) => {
       // Check if the user is authenticated
       if (!context.user) {
-        throw new AuthenticationError(
-          'You must be logged in to perform this action'
-        );
+        throw new AuthenticationError();
       }
       // Call the getSingleUser function from your controller
       return getSingleUser(context.user._id);
@@ -22,15 +22,12 @@ const resolvers = {
   },
   Mutation: {
     createUser: async (_, args) => {
-      // Call the createUser function from your controller
       return createUser(args);
     },
     saveBook: async (_, { input }, context) => {
       // Check if the user is authenticated
       if (!context.user) {
-        throw new AuthenticationError(
-          'You must be logged in to perform this action'
-        );
+        throw new AuthenticationError();
       }
       // Call the saveBook function from your controller
       return saveBook({ input, user: context.user });
@@ -38,15 +35,12 @@ const resolvers = {
     deleteBook: async (_, { bookId }, context) => {
       // Check if the user is authenticated
       if (!context.user) {
-        throw new AuthenticationError(
-          'You must be logged in to perform this action'
-        );
+        throw new AuthenticationError();
       }
       // Call the deleteBook function from your controller
       return deleteBook({ user: context.user, bookId });
     },
     login: async (_, args) => {
-      // Call the login function from your controller
       return login(args);
     },
   },

@@ -14,9 +14,33 @@ const typeDefs = `
         bookId: String!
         image: String
         link: String
-        title: String
+        title: String!
     }          
     
-    `;
+    type Query {
+        me: User
+    }
 
-    module.exports = typeDefs;
+    type Auth {
+        token: ID!
+        user: User
+    }
+
+    input BookInput {
+        authors: [String]
+        description: String!
+        bookId: String!
+        image: String
+        link: String
+        title: String!
+    }
+
+    type Mutation {
+        login(email: String!, password: String!): Auth
+        createUser(username: String!, email: String!, password: String!): Auth
+        saveBook(input: BookInput): User
+        deleteBook(bookId: String!): User
+    }
+    `
+
+module.exports = typeDefs;
