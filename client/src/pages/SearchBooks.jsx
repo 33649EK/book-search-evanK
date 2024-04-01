@@ -54,9 +54,7 @@ const SearchBooks = () => {
     }
   };
 
-  const tokenData = Auth.getProfile();
-  const userId = tokenData.data._id;
-  console.log(`UserId: ${userId}`);
+  
   const [saveBook] = useMutation(SAVE_BOOK);
 
   // create function to handle saving a book to our database
@@ -71,7 +69,9 @@ const SearchBooks = () => {
     if (!token) {
       return false;
     }
-
+const tokenData = Auth.getProfile();
+  const userId = tokenData.data._id;
+  console.log(`UserId: ${userId}`);
     try {
       console.log(`Bookid: ${bookToSave.bookId}`)
       const { data } = await saveBook({

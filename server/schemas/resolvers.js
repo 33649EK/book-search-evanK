@@ -28,15 +28,14 @@ const resolvers = {
       // Call the saveBook function from your controller
       return saveBook({ user, book });
     },
-    deleteBook: async (_, { bookId }, context) => {
+    deleteBook: async (_, { user, bookId }, context) => {
       // Check if the user is authenticated
-      if (!context.user) {
-        throw new AuthenticationError();
-      }
+      
       // Call the deleteBook function from your controller
-      return deleteBook({ user: context.user, bookId });
+      return deleteBook({ user, bookId });
     },
     login: async (_, args) => {
+      console.log(`args: ${args.email}, ${args.password}`);
       return login(args);
     },
   },
