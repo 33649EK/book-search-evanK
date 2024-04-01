@@ -28,7 +28,7 @@ module.exports = {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data;
     } catch {
-      console.log('Invalid token');
+      console.error('Invalid token');
     }
 
     // return the request object so it can be passed to the resolver as `context`
@@ -36,24 +36,7 @@ module.exports = {
   },
   signToken: function ({ email, name, _id }) {
     const payload = { email, name, _id };
-    console.log(`payload: ${payload.email}, ${payload.name}, ${payload._id}`);
+    // console.log(`payload: ${payload.email}, ${payload.name}, ${payload._id}`);
     return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
   },
 };
-// const { GraphQLError } = require('graphql');
-// const jwt = require('jsonwebtoken');
-
-// const secret = 'mysecretssshhhhhhh';
-// const expiration = '2h';
-
-// module.exports = {
-//   AuthenticationError: new GraphQLError('Could not authenticate user.', {
-//     extensions: {
-//       code: 'UNAUTHENTICATED',
-//     },
-//   }),
-//   signToken: function ({ email, name, _id }) {
-//     const payload = { email, name, _id };
-//     return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
-//   },
-// };

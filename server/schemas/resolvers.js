@@ -12,7 +12,7 @@ const { authMiddleware } = require('../utils/auth');
 const resolvers = {
   Query: {
     me: async (_, userId, context) => {
-      console.log(`context: ${userId._id}`);
+      // console.log(`context: ${userId._id}`);
       
       // Call the getSingleUser function from your controller
       return getSingleUser(userId._id);
@@ -20,11 +20,11 @@ const resolvers = {
   },
   Mutation: {
     createUser: async (_, args) => {
-      console.log(`args: ${args.username}, ${args.email}, ${args.password}`);
+      // console.log(`args: ${args.username}, ${args.email}, ${args.password}`);
       return createNewUser(args);
     },
     saveBook: async (_, { user, book }, context) => {
-      console.log(`user: ${user}, book: ${book}`);
+      // console.log(`user: ${user}, book: ${book}`);
       // Call the saveBook function from your controller
       return saveBook({ user, book });
     },
@@ -35,7 +35,7 @@ const resolvers = {
       return deleteBook({ user, bookId });
     },
     login: async (_, args) => {
-      console.log(`args: ${args.email}, ${args.password}`);
+      // console.log(`args: ${args.email}, ${args.password}`);
       return login(args);
     },
   },

@@ -35,7 +35,7 @@ const SignupForm = () => {
     }
 
     try {
-      console.log(`Userformdata: ${userFormData.username}, ${userFormData.email}, ${userFormData.password}`);
+      // console.log(`Userformdata: ${userFormData.username}, ${userFormData.email}, ${userFormData.password}`);
       const { data } = await createUser({
         variables: {
           username: userFormData.username,
@@ -43,14 +43,14 @@ const SignupForm = () => {
           password: userFormData.password,
         },
       });
-      console.log(`Signup data: ${data}`);
+      // console.log(`Signup data: ${data}`);
 
       if (!data) {
         throw new Error('something went wrong!');
       }
 
       const { token, user } = data.createUser;
-      console.log(token, user);
+      // console.log(token, user);
       console.log(user);
       Auth.login(token);
     } catch (err) {

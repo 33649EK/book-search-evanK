@@ -29,23 +29,23 @@ const LoginForm = () => {
     }
 
     try {
-      console.log(
-        `Email: ${userFormData.email}, Password: ${userFormData.password}`
-      );
+      // console.log(
+      //   `Email: ${userFormData.email}, Password: ${userFormData.password}`
+      // );
       const { data } = await loginUser({
         variables: {
           email: userFormData.email,
           password: userFormData.password,
         },
       });
-      console.log(`Data: ${data}, ${data.login}`);
+      // console.log(`Data: ${data}, ${data.login}`);
 
       if (!data) {
         throw new Error('Something went wrong!');
       }
 
       const { token, user } = data.login;
-      console.log(token, user);
+      // console.log(token, user);
       console.log(user);
       Auth.login(token);
       setUserFormData({

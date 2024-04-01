@@ -47,7 +47,7 @@ module.exports = {
   // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
   // user comes from `req.user` created in the auth middleware function
   async saveBook({ user, book }, res) {
-    console.log(user);
+    // console.log(user);
     try {
       const updatedUser = await User.findOneAndUpdate(
         { _id: user },
@@ -56,7 +56,7 @@ module.exports = {
       );
       return updatedUser;
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       throw new Error('Could not save book!');
     }
   },
@@ -70,7 +70,7 @@ module.exports = {
     if (!updatedUser) {
       throw new Error('Could not delete book');
     }
-    console.log(`updatedUser: ${updatedUser}`);
+    // console.log(`updatedUser: ${updatedUser}`);
     return updatedUser;
   },
 };
