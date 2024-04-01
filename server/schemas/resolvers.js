@@ -11,15 +11,11 @@ const { AuthenticationError } = require('../utils/auth');
 const { authMiddleware } = require('../utils/auth');
 const resolvers = {
   Query: {
-    me: async (_, token, context) => {
-      console.log(`context: ${context.user}`);
-      // Check if the user is authenticated
-      if (!context.user) {
-        throw new AuthenticationError();
-      }
+    me: async (_, userId, context) => {
+      console.log(`context: ${userId._id}`);
+      
       // Call the getSingleUser function from your controller
-      console.log(`context.user._id: ${context.user._id}`)
-      return getSingleUser(context.user._id);
+      return getSingleUser(userId._id);
     },
   },
   Mutation: {
@@ -27,13 +23,10 @@ const resolvers = {
       console.log(`args: ${args.username}, ${args.email}, ${args.password}`);
       return createNewUser(args);
     },
-    saveBook: async (_, { input }, context) => {
-      // Check if the user is authenticated
-      if (!context.user) {
-        throw new AuthenticationError();
-      }
+    saveBook: async (_, { user, book }, context) => {
+      console.log(`user: ${user}, book: ${book}`);
       // Call the saveBook function from your controller
-      return saveBook({ input, user: context.user });
+      return saveBook({ user, book });
     },
     deleteBook: async (_, { bookId }, context) => {
       // Check if the user is authenticated

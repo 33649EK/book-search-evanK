@@ -1,44 +1,37 @@
 import { useState, useEffect } from 'react';
-import {
-  Container,
-  Card,
-  Button,
-  Row,
-  Col
-} from 'react-bootstrap';
+import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 
 // import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 import { useQuery, useMutation } from '@apollo/client';
 // import { CREATE_USER } from '../utils/mutations';
-import  { GET_ME } from '../utils/queries';
+import { QUERY_ME } from '../utils/queries';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-  const { loading, data } = useQuery(GET_ME);
+  const tokenData = Auth.getProfile();
+  console.log(`UserId: ${tokenData.data._id}`);
+  // const { loading, data } = useQuery(QUERY_ME);
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
   // console.log();
-
+  const { data } = useQuery(QUERY_ME, {
+    variables: { _id: tokenData.data._id },
+  });
+  console.log(`Data: ${data.me._id}`);
   useEffect(() => {
     const getUserData = async () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
-        console.log(`Token: ${token}`)
-        console.log(`loading: ${loading}`)
-        if (!token) {
-          return false;
-        }
-        console.log(`Data: ${data}`);
-        const response = data?.me || [];
-        console.log(`Response: ${response}`);
-        if (!response) {
+        
+        if (!data) {
           throw new Error('something went wrong!');
         }
 
-        const user = response;
+        const user = data.me;
         setUserData(user);
+        
       } catch (err) {
         console.error(err);
       }
@@ -84,22 +77,33 @@ const SavedBooks = () => {
         </Container>
       </div>
       <Container>
-        <h2 className='pt-5'>
+        <h2 className="pt-5">
           {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+            ? `Viewing ${userData.savedBooks.length} saved ${
+                userData.savedBooks.length === 1 ? 'book' : 'books'
+              }:`
             : 'You have no saved books!'}
         </h2>
         <Row>
           {userData.savedBooks.map((book) => {
             return (
               <Col md="4">
-                <Card key={book.bookId} border='dark'>
-                  {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
+                <Card key={book.bookId} border="dark">
+                  {book.image ? (
+                    <Card.Img
+                      src={book.image}
+                      alt={`The cover for ${book.title}`}
+                      variant="top"
+                    />
+                  ) : null}
                   <Card.Body>
                     <Card.Title>{book.title}</Card.Title>
-                    <p className='small'>Authors: {book.authors}</p>
+                    <p className="small">Authors: {book.authors}</p>
                     <Card.Text>{book.description}</Card.Text>
-                    <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                    <Button
+                      className="btn-block btn-danger"
+                      onClick={() => handleDeleteBook(book.bookId)}
+                    >
                       Delete this Book!
                     </Button>
                   </Card.Body>

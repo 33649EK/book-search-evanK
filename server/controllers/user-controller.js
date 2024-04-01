@@ -5,15 +5,14 @@ const { signToken } = require('../utils/auth');
 
 module.exports = {
   // get a single user by either their id or their username
-  async getSingleUser({ user = null, params }, res) {
-    const foundUser = await User.findOne({
-      $or: [{ _id: user ? user._id : params.id }, { username: params.username }],
-    });
+  async getSingleUser(req, res) {
+    console.log(`req: ${req}`)
+    const foundUser = await User.findById(req);
 
     if (!foundUser) {
       throw new Error('User not found');
     }
-
+    console.log(foundUser);
     return foundUser;
   },
   // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
@@ -24,7 +23,7 @@ module.exports = {
     if (!user) {
       throw new Error('User not created!');
     }
-    const token = signToken(user);
+    const token = signToken({ email: user.email, name: user.username, _id: user._id });
     return { token, user };
   },
   // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
@@ -45,18 +44,18 @@ module.exports = {
   },
   // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
   // user comes from `req.user` created in the auth middleware function
-  async saveBook({ user, body }, res) {
+  async saveBook({ user, book }, res) {
     console.log(user);
     try {
       const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id },
-        { $addToSet: { savedBooks: body } },
+        { _id: user },
+        { $addToSet: { savedBooks: book } },
         { new: true, runValidators: true }
       );
-      return res.json(updatedUser);
+      return updatedUser;
     } catch (err) {
       console.log(err);
-      return res.status(400).json(err);
+      throw new Error('Could not save book!');
     }
   },
   // remove a book from `savedBooks`
