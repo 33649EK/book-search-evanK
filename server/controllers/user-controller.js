@@ -11,20 +11,21 @@ module.exports = {
     });
 
     if (!foundUser) {
-      return res.status(400).json({ message: 'Cannot find a user with this id!' });
+      throw new Error('User not found');
     }
 
-    res.json(foundUser);
+    return foundUser;
   },
   // create a user, sign a token, and send it back (to client/src/components/SignUpForm.js)
-  async createUser({ body }, res) {
-    const user = await User.create(body);
+  async createNewUser(req, res) {
+    console.log(`body: ${req.username}, ${req.email}, ${req.password}`);
+    const user = await User.create(req);
 
     if (!user) {
-      return res.status(400).json({ message: 'Something is wrong!' });
+      throw new Error('User not created!');
     }
     const token = signToken(user);
-    res.json({ token, user });
+    return { token, user };
   },
   // login a user, sign a token, and send it back (to client/src/components/LoginForm.js)
   // {body} is destructured req.body

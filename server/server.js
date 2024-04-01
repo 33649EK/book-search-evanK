@@ -4,21 +4,22 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const path = require('path');
 const db = require('./config/connection');
 // const routes = require('./routes');
+const { authMiddleware } = require('./utils/auth');
 const { typeDefs, resolvers } = require('./schemas');
 const app = express();
 const PORT = process.env.PORT || 3002;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: authMiddleware,
 });
 
 const serverStart = async () => {
   await server.start();
 
-  app.use('/graphql', expressMiddleware(server));
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
-
+  app.use('/graphql', expressMiddleware(server));
   // if we're in production, serve client/build as static assets
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/build')));

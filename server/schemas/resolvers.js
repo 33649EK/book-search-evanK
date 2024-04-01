@@ -1,28 +1,31 @@
 const {
-  createUser,
+  createNewUser,
   getSingleUser,
   saveBook,
   deleteBook,
   login,
 } = require('../controllers/user-controller');
-const { User } = require('../models');
+
 
 const { AuthenticationError } = require('../utils/auth');
-
+const { authMiddleware } = require('../utils/auth');
 const resolvers = {
   Query: {
-    me: async (_, __, context) => {
+    me: async (_, token, context) => {
+      console.log(`context: ${context.user}`);
       // Check if the user is authenticated
       if (!context.user) {
         throw new AuthenticationError();
       }
       // Call the getSingleUser function from your controller
+      console.log(`context.user._id: ${context.user._id}`)
       return getSingleUser(context.user._id);
     },
   },
   Mutation: {
     createUser: async (_, args) => {
-      return createUser(args);
+      console.log(`args: ${args.username}, ${args.email}, ${args.password}`);
+      return createNewUser(args);
     },
     saveBook: async (_, { input }, context) => {
       // Check if the user is authenticated

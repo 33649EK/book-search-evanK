@@ -7,32 +7,37 @@ import {
   Col
 } from 'react-bootstrap';
 
-import { getMe, deleteBook } from '../utils/API';
+// import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
+import { useQuery, useMutation } from '@apollo/client';
+// import { CREATE_USER } from '../utils/mutations';
+import  { GET_ME } from '../utils/queries';
 
 const SavedBooks = () => {
   const [userData, setUserData] = useState({});
-
+  const { loading, data } = useQuery(GET_ME);
   // use this to determine if `useEffect()` hook needs to run again
   const userDataLength = Object.keys(userData).length;
+  // console.log();
 
   useEffect(() => {
     const getUserData = async () => {
       try {
         const token = Auth.loggedIn() ? Auth.getToken() : null;
-
+        console.log(`Token: ${token}`)
+        console.log(`loading: ${loading}`)
         if (!token) {
           return false;
         }
-
-        const response = await getMe(token);
-
-        if (!response.ok) {
+        console.log(`Data: ${data}`);
+        const response = data?.me || [];
+        console.log(`Response: ${response}`);
+        if (!response) {
           throw new Error('something went wrong!');
         }
 
-        const user = await response.json();
+        const user = response;
         setUserData(user);
       } catch (err) {
         console.error(err);
